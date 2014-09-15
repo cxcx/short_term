@@ -40,3 +40,5 @@ STATE modify_telnum(char *tel_number);
 void savedisk();
 void getexit();
 void mkswich();
+void show_all();
+Contact_ptr serch_item(char* name_temp);

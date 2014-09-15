@@ -37,24 +37,29 @@ int main()
 void mkswich()
 {
     int i;
-    printf("add someone,please press 1,delete someone please 2,search someone please press 3,4 is for exit");
+    printf("to show all press 1,add someone,please press 2,to delete someone please 2,to search someone please press 4,5 is for exit");
     scanf("%d", &i);
     switch(i):
-        case '1':
+        case '2':
             char name_temp[10], tel_number_temp[20], addr_temp[30];
-            printf("please input the name(less 10 words):%s", name_temp);
+            printf("please input the name(less 10 words):")
+            scanf("%s", name_temp);
             printf("please input the tel_number_temp:");
             scanf("%s", tel_number_temp);
-            printf("please input the address:%s", addr_temp);
+            printf("please input the address:");
             scanf("%s", addr_temp);
             add_item(name_temp, tel_number_temp, addr_temp);
             break;
-        case '2':
-
-            
-            
-            
-
+        case '3':
+            char delete_name[10];
+            printf("please input who u want to delete:%s", delete_name);
+            scanf("%s", delete_name);
+            delete_item(delete_name);
+            break;
+        case '4':
+            char search_name[10];
+            printf("please input the name for search:");
+            scanf("%s", search_name);
 }
 
 /* 
@@ -130,6 +135,25 @@ void load(FILE *f)
     }
     fclose(f);
 }
+
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  show_all
+ *  Description:  
+ * =====================================================================================
+ */
+void show_all()
+{
+    Contact_ptr temp_ptr = home;
+    int i = 0;
+    for(; i<numoflist; i++)
+    {
+        printf("%d.", i);
+        printf("Name:%s;\ntelephone number:%s;\nadress:%s:\n", temp_ptr->name, temp_ptr->tel_number, temp_ptr->addr);
+        temp_ptr = temp_ptr->next;
+    }
+}
+
 /* 
  * ===  FUNCTION  ======================================================================
  *         Name:  add_item
@@ -165,9 +189,56 @@ STATE add_item(char *name, char *tel_number, char *addr)
  *  Description:  
  * =====================================================================================
  */
+STATE delete_item(char* name_temp)
+{
+    Contact_ptr temp_ptr = home;
+    while(temp_ptr->next != NULL && strcmp(temp_ptr->next->name, name_temp) == 0)
+    {
+        temp_ptr = temp_ptr->netx;
+    }
+    if(temp_ptr->next == NULL)
+    {
+        printf("this contact doesn't exit\n");
+        return STATENO;
+    }
+    else
+    {
+        Contact_ptr temp = temp_ptr->next;
+        temp_ptr->netx = temp_ptr->next->next;
+        free(temp_ptr->next);
+        return STATEOK;
+    }
+}
 
 
 /* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  serch_item
+ *  Description:  
+ * =====================================================================================
+ */
+Contact_ptr serch_item(char* name_temp)
+{
+    Contact_ptr temp_ptr = head;
+    Contact_ptr serch_result = NULL;
+    Contact_ptr serch_home = NULL;
+    while(temp_ptr != NULL)
+    {
+        temp_ptr = temp_ptr->netx;
+        if(strcmp(temp_ptr->name, name_temp) == 0)
+        {
+            if(serch_home == NULL)
+            {
+                serch_home = serch_result = temp_ptr;
+            }
+            else
+                serch_result->next = temp_ptr;
+                serch_result = serch_result->next;
+        }
+    }
+    return serch_home;
+}
+/*
  * ===  FUNCTION  ======================================================================
  *         Name:  savedisk
  *  Description:  
