@@ -165,6 +165,11 @@ STATE add_item(char *name, char *tel_number, char *addr)
  *  Description:  
  * =====================================================================================
  */
+STATE delete_item(char* name_temp)
+{
+    Contact_ptr temp_ptr = home;
+    while()
+}
 
 
 
