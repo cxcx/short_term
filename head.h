@@ -39,3 +39,4 @@ STATE modify_addr(char *addr);
 STATE modify_telnum(char *tel_number);
 void savedisk();
 void getexit();
+void mkswich();

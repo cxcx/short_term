@@ -41,6 +41,17 @@ void mkswich()
     scanf("%d", &i);
     switch(i):
         case '1':
+            char name_temp[10], tel_number_temp[20], addr_temp[30];
+            printf("please input the name(less 10 words):%s", name_temp);
+            printf("please input the tel_number_temp:");
+            scanf("%s", tel_number_temp);
+            printf("please input the address:%s", addr_temp);
+            scanf("%s", addr_temp);
+            add_item(name_temp, tel_number_temp, addr_temp);
+            break;
+        case '2':
+
+            
             
             
 
@@ -146,6 +157,16 @@ STATE add_item(char *name, char *tel_number, char *addr)
         numoflist++;
     }
 }
+
+
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  delete_item
+ *  Description:  
+ * =====================================================================================
+ */
+
+
 
 /* 
  * ===  FUNCTION  ======================================================================
