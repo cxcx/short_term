@@ -32,7 +32,7 @@ typedef struct Contact{
 STATE test_initialized();
 STATE Create_user();
 void load(FILE *f);
-STATE add_item(char *name, char *tel_number, char* addr);
+void add_item(char *name, char *tel_number, char* addr);
 STATE delete_item(char *name);
 STATE modify_name(char *name);
 STATE modify_addr(char *addr);
