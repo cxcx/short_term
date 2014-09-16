@@ -43,7 +43,7 @@ void mkswich()
     int i;
     printf("to show all press 1\nadd someone please press 2\nto delete someone please 3\nto search someone please press 4\n5 is for exit\nplease input ur choice:");
     scanf("%d", &i);
-    if((i!=1)&&(i!=2)&&(i!=3)&&(i!=4))
+    if((i!=1)&&(i!=2)&&(i!=3)&&(i!=4)&&(i!=5))
     {
         printf("ilegle input\n");
         exit(0);
@@ -66,7 +66,7 @@ void mkswich()
             break;
         case 3:
             char delete_name[10];
-            printf("please input who u want to delete:%s", delete_name);
+            printf("please input who u want to delete:");
             scanf("%s", delete_name);
             delete_item(delete_name);
             break;
@@ -74,6 +74,10 @@ void mkswich()
             char search_name[10];
             printf("please input the name for search:");
             scanf("%s", search_name);
+            break;
+        case 5:
+            getexit();
+            break;
     }
 }
 
@@ -160,13 +164,20 @@ void load(FILE *f)
  */
 void show_all()
 {
-    Contact_ptr temp_ptr = head;
-    int i = 0;
-    for(; i<numoflist; i++)
+    if(numoflist == 0)
     {
-        printf("%d.", i);
-        printf("Name:%s;\ntelephone number:%s;\nadress:%s:\n", temp_ptr->name, temp_ptr->tel_number, temp_ptr->addr);
-        temp_ptr = temp_ptr->next;
+        printf("no contacts\n");
+    }
+    else
+    {
+        Contact_ptr temp_ptr = head;
+        int i = 0;
+        for(; i<numoflist; i++)
+        {
+            printf("%d.", i);
+            printf("Name:%s;\ntelephone number:%s;\nadress:%s:\n", temp_ptr->name, temp_ptr->tel_number, temp_ptr->addr);
+            temp_ptr = temp_ptr->next;
+        }
     }
 }
 
@@ -178,21 +189,22 @@ void show_all()
  */
 void add_item(char *name, char *tel_number, char *addr)
 {
+    Contact_ptr temp_ptr = NULL;
     if(numoflist == 0)
     {
         head = (Contact_ptr)malloc(sizeof(Contact));  
         strcpy(head->name, name);
         strcpy(head->tel_number, tel_number);
         strcpy(head->addr, addr);
-        ptr = head->next;
+        ptr = head;
         numoflist++;
     }
     else
     {
-        ptr = (Contact_ptr)malloc(sizeof(Contact));
-        strcpy(ptr->name, name);
-        strcpy(ptr->tel_number, tel_number);
-        strcpy(ptr->addr,addr);
+        ptr->next = (Contact_ptr)malloc(sizeof(Contact));
+        strcpy(ptr->next->name, name);
+        strcpy(ptr->next->tel_number, tel_number);
+        strcpy(ptr->next->addr,addr);
         ptr = ptr->next;
         numoflist++;
     }
@@ -208,22 +220,28 @@ void add_item(char *name, char *tel_number, char *addr)
 STATE delete_item(char* name_temp)
 {
     Contact_ptr temp_ptr = head;
-    while(temp_ptr->next != NULL && strcmp(temp_ptr->next->name, name_temp) == 0)
+    if(strcmp(temp_ptr->name, name_temp) == 0)
+    {
+                head = head->next;
+                free(temp_ptr);
+                return STATEOK;
+    }
+    while(temp_ptr->next != NULL && strcmp(temp_ptr->next->name, name_temp) != 0)
     {
         temp_ptr = temp_ptr->next;
-    }
-    if(temp_ptr->next == NULL)
-    {
-        printf("this contact doesn't exit\n");
-        return STATENO;
-    }
-    else
-    {
-        Contact_ptr temp = temp_ptr->next;
-        temp_ptr->next = temp_ptr->next->next;
-        free(temp_ptr->next);
-        numoflist--;
-        return STATEOK;
+        if(temp_ptr->next == NULL)
+        {
+            printf("this contact doesn't exit\n");
+            return STATENO;
+        }
+        else
+        {
+            Contact_ptr temp = temp_ptr->next;
+            temp_ptr->next = temp_ptr->next->next;
+            free(temp);
+            numoflist--;
+           return STATEOK;
+        }
     }
 }
 
@@ -263,17 +281,18 @@ Contact_ptr serch_item(char* name_temp)
  */
 void savedisk()
 {
+
+    Contact_ptr temp = head;
     FILE* f= fopen("ContactList","rb");
     int i = 0;
     fwrite(&id_length, sizeof(int), 1, f);
     fwrite(&id, sizeof(char), id_length, f);
     fwrite(&numoflist, sizeof(int), 1, f);
-    for(; i<numoflist; i++)
-    {
-         Contact_ptr temp = head;
-         fwrite(temp, sizeof(Contact), numoflist, file);
-    }
-    getexit();
+    //for(; i<numoflist; i++)
+    //{
+     //    fwrite(temp, sizeof(Contact), numoflist, file);
+       //  temp = temp->next;
+    //}
     fclose(f);
 }
 
@@ -285,6 +304,7 @@ void savedisk()
  */
 void getexit()
 {
+    savedisk();
     Contact_ptr temp = head;
     int i = 0;
     for(; i<numoflist ;i++)
@@ -292,5 +312,7 @@ void getexit()
         free(temp);
         temp = temp->next;
     }
+    printf("exited\n");
+    exit(0);
 }
 
