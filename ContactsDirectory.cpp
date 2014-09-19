@@ -91,7 +91,7 @@ void mkswich()
 STATE test_initialized()
 {
     system("reset");
-    if((file = fopen("ContactList", "rb")) == NULL)
+    if((file = fopen("ContactList", "r")) == NULL)
     {
         printf("hey man,this is ur first using,please initialize\n");
         return STATENO;
@@ -120,6 +120,7 @@ STATE Create_user()
         {
             fputc(numoflist, file);
             printf("initialization succeed\n");
+            return STATEOK;
         }
     }
     else
@@ -146,12 +147,17 @@ void load(FILE *f)
     printf("ur id is %s\nthere are %d contacts\n", id, numoflist);
     for(; i<numoflist; i++)
     {
-        if(numoflist == 0)
+        if(i == 0)
         {
             head = ptr = (Contact_ptr)malloc(sizeof(Contact));
+            fread(ptr, sizeof(Contact), 1, f);
         }
-        fread(ptr, sizeof(Contact), 1, f);
-        ptr = ptr->next;
+        else
+        {
+            ptr->next = (Contact_ptr)malloc(sizeof(Contact));
+            fread(ptr, sizeof(Contact), 1, f);
+            ptr = ptr->next;
+        }
     }
     fclose(f);
 }
@@ -283,16 +289,16 @@ void savedisk()
 {
 
     Contact_ptr temp = head;
-    FILE* f= fopen("ContactList","rb");
+    FILE* f= fopen("ContactList","wb");
     int i = 0;
     fwrite(&id_length, sizeof(int), 1, f);
     fwrite(&id, sizeof(char), id_length, f);
     fwrite(&numoflist, sizeof(int), 1, f);
-    //for(; i<numoflist; i++)
-    //{
-     //    fwrite(temp, sizeof(Contact), numoflist, file);
-       //  temp = temp->next;
-    //}
+    for(; i<numoflist; i++)
+    {
+         fwrite(temp, sizeof(Contact), numoflist, f);
+         temp = temp->next;
+    }
     fclose(f);
 }
 
